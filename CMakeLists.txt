@@ -8,6 +8,8 @@ else()
     byd__cmake__configure__add_arg(${package} POCO_STATIC ON)
 endif()
 
+byd__cmake__configure__add_arg(${package} HUNTER_ENABLED OFF)
+
 
 byd__package__get_components_to_build(${package} components_to_build)
 if(components_to_build)
