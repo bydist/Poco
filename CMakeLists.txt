@@ -1,39 +1,50 @@
-include("${CMAKE_CURRENT_LIST_DIR}/id.cmake")
 
 
 
-if(BUILD_SHARED_LIBS)
-    byd__cmake__configure__add_arg(${package} POCO_STATIC OFF)
-else()
-    byd__cmake__configure__add_arg(${package} POCO_STATIC ON)
-endif()
 
-byd__cmake__configure__add_arg(${package} HUNTER_ENABLED OFF)
+function(byd__Poco__set_component_enable package component enable)
 
+    string(TOUPPER ${component} COMPONENT)
+    byd__cmake__configure__add_arg(${package} "ENABLE_${COMPONENT}" "${enable}")
 
-byd__package__get_components_to_build(${package} components_to_build)
-if(components_to_build)
+endfunction()
 
-    include("${CMAKE_CURRENT_LIST_DIR}/component.cmake")
-    byd__package__get_components(${package} components)
+function(build package)
 
-    foreach(component ${components})
+    byd__package__split_package_component_name(${package} package_name component_name)
+    byd__private__is_empty(component_name is_component_name_empty)
 
-        string(TOUPPER ${component} COMPONENT)
+    if(is_component_name_empty)
+        cmut_info("[${package_name}] : nothing to build ...")
+        return()
+    endif()
 
-        if(component IN_LIST components_to_build)
-            set(enable ON)
-        else()
-            set(enable OFF)
-        endif()
+    byd__package__get_components(${package_name} components)
+    list(REMOVE_ITEM components ${component_name})
 
-        byd__cmake__configure__add_arg(${package} "ENABLE_${COMPONENT}" "${enable}")
-
+    foreach(component IN LISTS components)
+        byd__Poco__set_component_enable(${package_name} ${component} OFF)
     endforeach()
-endif()
+    byd__Poco__set_component_enable(${package_name} ${component_name} ON)
 
 
-if(APPLE)
-    byd__fixup_dylib(${package})
-endif()
-byd__cmake__add(${package} SKIP test)
+
+    if(BUILD_SHARED_LIBS)
+        byd__cmake__configure__add_arg(${package} POCO_STATIC OFF)
+    else()
+        byd__cmake__configure__add_arg(${package} POCO_STATIC ON)
+    endif()
+
+    byd__cmake__configure__add_arg(${package} HUNTER_ENABLED OFF)
+
+    if(APPLE)
+        byd__fixup_dylib(${package})
+    endif()
+    byd__cmake__add(${package} SKIP test)
+
+
+endfunction()
+
+
+
+build(${package})
