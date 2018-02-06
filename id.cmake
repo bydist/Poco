@@ -1,5 +1,5 @@
 set(package Poco)
-set(version 1.7.6-unowhy)
+set(version 1.8.1-unowhy)
 
 
 byd__package__info(${package}
@@ -10,6 +10,6 @@ byd__package__info(${package}
     )
 
 byd__package__download_info(${package}
-    URL "https://github.com/ledocc/poco/archive/1.7.6-unowhy.tar.gz"
-    URL_HASH SHA1=9737ae4b0963fcace85c2e9d1dc2d8b7ecf0e4b2
+    URL "https://github.com/ledocc/poco/archive/${version}.tar.gz"
+    URL_HASH SHA1=d4cfde6fb89b70ab375f3b465602fabb503b520f
 )
