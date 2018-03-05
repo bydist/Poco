@@ -15,7 +15,7 @@ function(build package)
     byd__private__is_empty(component_name is_component_name_empty)
 
     if(is_component_name_empty)
-        cmut_info("[${package_name}] : nothing to build ...")
+        cmut_fatal("[${package_name}] : nothing to build, component is required.")
         return()
     endif()
 
